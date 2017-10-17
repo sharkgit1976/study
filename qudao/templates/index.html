@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}后台首页{% endblock %}
+{% block right %}
+    <div class="king-layout6-content">
+        <section style="padding:0 15px">
+            <ol class="breadcrumb"
+                style="margin-bottom:0;border-bottom:1px solid #eee;background:none;border-radius:0;padding-left:5px;">
+                <li id='breadcrumb-2'><i class="fa fa-dashboard"></i> <a href="/index">后台首页</a></li>
+                <li id='breadcrumb-3'></li>
+            </ol>
+        </section>
+        <section class="king-content" id="king-content1">
+            <div class="panel panel-default">
+                <div class="panel-heading"><h3 >欢迎使用新晨自动化运维平台</h3> <span>登录时间：{{ datetime }}</span> </div>
+                <div class="panel-body">
+                    <h5><strong>说明:</strong></h5>
+                    <h5>
+                        <ol>
+                            <li>python语言开发,OS版本linux；</li>
+                            <li>基于ansible，需要安装ansible相关组件。</li>
+
+                        </ol>
+                    </h5>
+                </div>
+                <div class="panel-footer">
+                    <p class="text-right">鸣谢：  彭程(北京) 卢俊卿(北京)</p>
+                </div>
+            </div>
+
+        </section>
+        {#                 <section class="king-content" id="king-content1">#}
+        {#            <div class="panel panel-default ijobs-innerbox" style="padding:20px;min-height:300px;">{{LayoutContent}}</div>#}
+        {#          </section>#}
+    </div>
+
+
+
+
+{% endblock %}

@@ -15,6 +15,9 @@ from oms_web import settings
 
 
 class BaseResponse:
+    '''
+    用于给前端返回结果信息
+    '''
     def __init__(self):
         self.status = False
         self.data = None
@@ -22,12 +25,24 @@ class BaseResponse:
 
 
 class VersionControl(object):
+    """
+    用于处理不同主机组升级的命令组合
+    """
     def __init__(self, args, script_file='',
                  scritpt_dir=settings.VERSION_script_dir,
                  action='',
                  start_host='',
                  end_host='',
                  ):
+        '''
+        初始化主机执行命令时用到的参数
+        :param args:         执行的动作（0:获取版本号，1：升级，2:回滚,3:打包工具）
+        :param script_file:  命令执行脚本
+        :param scritpt_dir:  执行脚本的目录
+        :param action:       根据相应动作而需要给的参数，比如：升级，这里就是 升级包
+        :param start_host:   执行命令的开始主机
+        :param end_host:     执行命令的结束主机
+        '''
         self.args = ' ' + args
         self.script_file = script_file
         self.script_dir = scritpt_dir
@@ -40,7 +55,13 @@ class VersionControl(object):
         self.cmd_run = self.cmd + self.args
 
     def get_version_list(self):
+
+        '''
+        执行命令，接受返回的版本列表
+        :return: 经过反转后的版本号列表
+        '''
         self.result_str = os.popen(self.cmd_run).read()
+
         logger.info(self.result_str.split(':'))
         self.version_list = self.result_str.split(':')[1].strip().split('\n')
         self.version_list.reverse()
@@ -48,8 +69,9 @@ class VersionControl(object):
 
     def action_func(self):
         """
+        根据参数，执行相应的动作，升级、回滚等
           测试是使用  host_range = 8-8
-        :return:
+        :return: 命令执行的结果
         """
         self.cmd_run = self.cmd_run + self.action + self.start_host + '-' + self.end_host
         self.result_str = self.cmd_run
@@ -57,7 +79,15 @@ class VersionControl(object):
 
 
 class ChMap(View):
+    '''
+    联机主机组
+    '''
     def get(self, request):
+        '''
+        接收 get 请求
+        :param request: 
+        :return: 版本号列表 
+        '''
         logger.info(request.GET)
         logger.info("------------------------------")
         handler_script = settings.VERSION_chmap_script
@@ -86,26 +116,33 @@ class ChMap(View):
         #         and start_host.isdigit() and end_host.isdigit():
         if start_host and end_host and start_host <= end_host \
                 and int(start_host) in settings.chmap_host and int(end_host) in settings.chmap_host:
+
             endtime = datetime.datetime.now()
             logger.info((endtime - starttime).seconds)
             # 版本回滚
             if roll_choice_vers:
                 starttime = datetime.datetime.now()
-                chmap_obj = VersionControl('2', script_file=settings.VERSION_chmap_script,
+                chmap_obj = VersionControl('2',
+                                           script_file=settings.VERSION_chmap_script,
                                            action=roll_choice_vers,
                                            start_host=start_host,
                                            end_host=end_host)
                 chmap_result_str = chmap_obj.action_func()
-                logger.info("--------chmap 开始回滚 -------------")
-                logger.info(chmap_result_str)
-                res_obj.status = True
-                res_obj.data = chmap_result_str
+
                 endtime = datetime.datetime.now()
                 logger.info((endtime - starttime).seconds)
+
                 # 执行python命令
+                logger.info("--------chmap 开始回滚 -------------")
                 logger.info('开始回滚：' + chmap_result_str)
-                result_chmap = os.popen(chmap_result_str).read()
-                res_obj.data = result_chmap
+                try:
+                    result_chmap = os.popen(chmap_result_str).read()
+                except Exception as e:
+                    logger.info("执行回滚命令出错：",e)
+                    res_obj.error   = "回滚出现异常{}，请检查日志".format(e)
+                else:
+                    res_obj.status = True
+                    res_obj.data = result_chmap
                 # res_obj.data = chmap_result_str
 
             elif myFile:
@@ -433,7 +470,6 @@ class ChCom(View):
                 if not myfile:
                     res_obj.status = False
                     res_obj.error = "升级包没有上传成功"
-                    rerurn
                     HttpResponse(res_obj.__dict__)
 
                 # 打开特定的文件进行二进制的写操作
@@ -531,8 +567,8 @@ class TrunkChDb(View):
                 endtime = datetime.datetime.now()
                 logger.info((endtime - starttime).seconds)
                 # 执行python命令
-                logger.info('开始回滚：' + trunk_chdb_result_str)
-                result_pgadmin = os.popen(trunk_chdb_result_str).read()
+                logger.info('开始回滚：' + pgadmin_result_str)
+                result_pgadmin = os.popen(pgadmin_result_str).read()
                 res_obj.data = result_pgadmin
                 # res_obj.data = trunk_chdb_result_str
 
