@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% block title %}新晨平台启停{% endblock %}
+{% block link_js %}
+    <style type="text/css">
+        * {
+            font-family: 微软雅黑;
+        }
+
+        span.active {
+            color: #ad2a14;
+        }
+    </style>
+
+
+{% endblock %}
+{% block right %}
+    <div class="king-layout6-content">
+        <h3 class="page-header text-center text-info">新晨平台启停</h3>
+        <div class="col-md-10 col-md-offset-1">
+            <label >选择执行主机:</label>
+            <div class="alert alert-info">
+                <strong>&nbsp;&nbsp;&nbsp;主机组:</strong>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?group=chmap&area={{ area }}">
+                    <span class="{% ifequal group 'chmap' %}active{% endifequal %}">联机服务</span>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?group=chdb&area={{ area }}">
+                    <span class="{% ifequal group 'chdb' %}active{% endifequal %}">数据处理</span>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?group=chagent&area={{ area }}">
+                    <span class="{% ifequal group 'chagent' %}active{% endifequal %}">数据代理</span>
+                </a>
+            </div>
+
+            <div class="alert alert-success">
+                <strong>所属地区:</strong>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?group={{ group }}">
+                    <span class="{% ifequal area '' %}active{% endifequal %}">全部</span>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?group={{ group }}&area=1">
+                    <span class="{% ifequal area '1' %}active{% endifequal %}">亦庄</span>
+                </a>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="?group={{ group }}&area=2">
+                    <span class="{% ifequal area '2' %}active{% endifequal %}">丰台</span>
+                </a>
+            </div>
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <span>主机列表</span>
+                </div>
+
+                {#        <div class="panel-body">#}
+                {#            <div class="list-op" id="list_op">#}
+                {#                <button type="button" class="btn btn-info btn-sm">#}
+                {#                    <span  aria-hidden="true"></span>全选#}
+                {#                </button>#}
+                {#                <button type="button" class="btn btn-danger btn-sm">#}
+                {#                    <span  aria-hidden="true"></span>取消#}
+                {#                </button>#}
+                {#            </div>#}
+                {#        </div>#}
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr class="success">
+                        <th class="text-center"><input type="checkbox" id="checkAll" id="checkAll"/></th>
+                        <th class="text-center">主机组</th>
+                        <th class="text-center">所属地区</th>
+                        <th class="text-center">主机IP</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for host in all_hosts %}
+                        <tr>
+
+                            <td class="text-center"><input type="checkbox" name="checkItem" value="{{ host.addip }}"/>
+                            </td>
+                            {% if host.group == 'chmap' %}
+                                <td class="text-center">联机服务</td>
+                            {% elif host.group == 'chdb' %}
+                                <td class="text-center">数据处理</td>
+                            {% elif host.group == 'chagent' %}
+                                <td class="text-center">数据代理</td>
+                            {% else %}
+                                <td class="text-center">其他类型的服务</td>
+                            {% endif %}
+                            {% if host.area == 1 %}
+                                <td class="text-center">亦庄</td>
+                            {% elif host.area == 2 %}
+                                <td class="text-center">丰台</td>
+                            {% else %}
+                                <td class="text-center">其他地区</td>
+                            {% endif %}
+                            <td class="text-center">{{ host.addip }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="panel-footer">
+                    {% csrf_token %}
+                    总共 <strong>{{ host_nums }}</strong> 条记录
+                    <button type="submit" class="col-md-offset-9 btn btn-primary " name="submit1"
+                            id="select_host">
+                        提交
+                    </button>
+                </div>
+            </div>
+        </div>
+        <br>
+
+        <div class="col-md-10">
+            <p id="file_name" ></p>
+            <label class="col-md-2 col-md-offset-1">执行动作:</label>
+            <div class="col-md-10 col-md-offset-3" id ="start_stop">
+                <button class="btn btn-success col-md-3 " href="" role="button" id="start">
+                    <h4>新晨平台启动</h4>
+                </button>
+                <button class="btn btn-danger col-md-3 col-md-offset-1 " href="" role="button" id="stop">
+                    <h4>新晨平台停止</h4>
+                </button>
+            </div>
+        </div>
+
+        <div class="col-md-10 ">&nbsp</div>
+        <div class="col-md-10">
+            <label class="col-md-2 col-md-offset-1">启停过程:</label>
+            <div class="col-md-11 col-sm-offset-2 stype=overflow:scroll">
+                <textarea class="form-control" rows="25" id="result"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+
+
+{% endblock %}
+{% block my_script %}
+    <script src="/static/js/jquery.cookie.js"></script>
+    <script>
+
+        $("#checkAll").click(function() {
+                if ($(this).prop("checked") == true)
+{#                    $('input[name="checkItem"]').attr("checked",this.checked);#}
+                    $('input[name="checkItem"]').prop("checked",true);
+                else
+                    $('input[name="checkItem"]').prop("checked",false);
+         });
+
+
+
+        var csrftoken = $.cookie('csrftoken');
+        console.log(csrftoken);
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+
+        $("#select_host").click(function(){
+
+        	var str = document.getElementsByName("checkItem");
+				var answer = '';
+				for (var i = 0 ; i<str.length;i++)
+				{
+    				if(str[i].checked == true)
+   					{
+        				answer +=str[i].value+',';
+        				//answer.push(str[i].value);
+        				//answer[i] = str[i].value
+    				}
+				}
+            var file_group = '{{ group }}' ;
+                console.log(answer);
+                console.log(file_group)
+            $.ajax({
+
+                type: "POST",
+                url:"{% url 'service:ansible_config' %}",
+                data: {'answer':answer,'file_group':file_group},
+{#                headers: {"X_CSRFtoken": $.cookie('csrftoken')},#}
+                dataType:"json",
+                cache:false,
+                async: false,
+                success: function(data) {
+                  console.log(data)
+                  console.log(data.msg,data.recode)
+                    if(data.recode == 'success'){
+                       console.log("?start=1&file_name="+data.file_name)
+{#                        var start = "?start=1&file_name="+data.file_name#}
+{#                        var stop = "?stop=2&file_name="+data.file_name#}
+{#                        console.log(start,stop)#}
+{#                        var start_stop = '<a class="btn btn-success col-md-3 " href="?start=1&file_name='+data.file_name+'" role="button"><h4>新晨平台启动</h4></a>'+#}
+{#                            '<a class="btn btn-danger col-md-3 col-md-offset-1 " href="?stop=2&file_name='+data.file_name+'" role="button"><h4>新晨平台停止</h4></a>'#}
+{#                        console.log(start_stop)#}
+{#                        $("#start_stop").html(start_stop)#}
+                        alert("数据添加成功")
+                        $("#file_name").html(data.file_name)
+                    }else if(data.recode == 'fail'){
+                        alert(data.msg)
+                    }
+                },
+                error:function(data){
+                  console.log(data)
+
+                }
+            });
+        });
+
+        $("#start").click(function () {
+            var filename = $("#file_name").text()
+            console.log(filename)
+            alert("请耐心等待,启动时间可能较长,出现崩溃请不要关闭,点击继续等待!!!!!")
+            $.ajax({
+
+                type: "POST",
+                url: "{% url 'service:ServiceStart' %}",
+                data: {'start': '1', 'filename': filename},
+                dataType: "json",
+                cache: false,
+                async: false,
+                success: function (data) {
+                    console.log(data.msg, data.recode)
+                    if (data.recode == 'success') {
+                        alert("针对返回的结果进行处理")
+                        $("#result").html(data.result)
+                    } else if (data.recode == 'fail') {
+                        alert(data.msg)
+                    }
+                },
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        });
+
+        $("#stop").click(function () {
+            var filename = $("#file_name").text()
+            console.log(filename)
+            alert("请耐心等待,启停时间可能较长!!!")
+            $.ajax({
+
+                type: "POST",
+                url: "{% url 'service:ServiceStart' %}",
+                data: {'stop': '2', 'filename': filename},
+                dataType: "json",
+                cache: false,
+                async: false,
+                success: function (data) {
+                    console.log(data.msg, data.recode)
+                    if (data.recode == 'success') {
+                        alert("处理成功!!!")
+                        $("#result").html(data.result)
+                    } else if (data.recode == 'fail') {
+                        alert(data.msg)
+                    }
+                },
+                error: function (data) {
+                    console.log(data)
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

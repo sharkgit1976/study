@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% block title %}Redis实例监控{% endblock %}
+{% block link_js %}
+<script>
+    setInterval(function () {
+        $("#redis_monitor").load(location.href + " #redis_monitor>*", "");
+    }, 1000);
+</script>
+{% endblock %}
+{% block right %}
+<div class="king-layout6-content">
+    <h3 class="page-header text-center text-info">Redis实例监控</h3>
+    <!--<div class="main_container">-->
+
+    <!-- page content -->
+    <div class="right_col" id="redis_monitor" role="main">          <!-- top tiles -->
+        {% for key,value in result.items %}
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <div class="x_panel tile fixed_height_320 overflow_hidden">
+                <div class="x_title">
+                    <h2>REDIS {{ key }}</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    {% ifequal value.ping 1 %}
+                    <table class="" style="width:100%">
+                        <tr>
+                            <!-- <th style="width:37%;">
+                              <p>Top 5</p>
+                            </th> -->
+                            <th>
+                                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                                    <p class="">参数</p>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-md-offset-3">
+                                    <p class="">属性</p>
+                                </div>
+                            </th>
+                        </tr>
+                        <tr>
+                            <!--  <td>
+                               <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                             </td> -->
+                            <td>
+                                <table class="tile_info">
+                                    <tr>
+                                        <td>
+                                            <p><i class="fa fa-square blue"></i>分配的内存总量 </p>
+                                        </td>
+                                        <td>{{ value.used_memory_human }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p><i class="fa fa-square green"></i>内存消耗峰值 </p>
+                                        </td>
+                                        <td>{{ value.used_memory_peak_human}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p><i class="fa fa-square purple"></i>主/从复制信息 </p>
+                                        </td>
+                                        <td>{{ value.role }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p><i class="fa fa-square aero"></i>键个数 (keys) </p>
+                                        </td>
+                                        <td>{{ value.keys }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p><i class="fa fa-square red"></i>每秒执行的命令数</p>
+                                        </td>
+                                        <td>{{ value.instantaneous_ops_per_sec }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <!--<p><i class="fa fa-square red"></i> </p>-->
+                                            <p><i class="fa fa-square red"></i></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="x_title "></div>
+                    <div style="float: right"><a class="btn btn-success btn-sm" href="{% url 'monitor:MonitorRedisInfo' %}?redis_ip={{ value.ip }}&redis_port={{ value.port }}" target="_blank">详细</a></div>
+                    {% endifequal %}
+                    {% ifequal value.ping 0 %}
+                    <table class="" style="width:100%">
+                        <tr>
+                            <!-- <th style="width:37%;">
+                              <p>Top 5</p>
+                            </th> -->
+                            <th>
+                                <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                                    <p class="">ping 错误</p>
+                                </div>
+                                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-md-offset-3">
+                                    <p class="">提示</p>
+                                </div>
+                            </th>
+                        </tr>
+                        <tr>
+                            <!--  <td>
+                               <canvas class="canvasDoughnut" height="140" width="140" style="margin: 15px 10px 10px 0"></canvas>
+                             </td> -->
+                            <td>
+                                <table class="tile_info">
+                                    <tr>
+                                        <td>
+                                            <p class="text-danger"><i class="fa fa-square blue text-danger"></i>无法链接
+                                            </p>
+                                        </td>
+                                        <td><p class="text-danger"><a href="#">请检查</a></p></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p></p>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p></p>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p></p>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p></p>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    {% endifequal %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <!-- /page content -->
+    <!--</div>-->
+</div>
+{% endblock %}
