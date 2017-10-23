@@ -96,7 +96,6 @@ class ChMap(View):
                                            start_host=start_host,
                                            end_host=end_host)
                 chmap_result_str = chmap_obj.action_func()
-                logger.info("--------chmap 开始回滚 -------------")
                 logger.info(chmap_result_str)
                 res_obj.status = True
                 res_obj.data = chmap_result_str

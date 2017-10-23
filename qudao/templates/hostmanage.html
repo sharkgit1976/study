@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+{% block title %}主机配置管理{% endblock %}
+{% block link_js %}
+<link href="/static/css/skin/blue.css" rel="stylesheet">
+<script src="/static/js/icheck.js"></script>
+
+{% endblock %}
+{% block right %}
+
+<div class="king-layout6-content">
+    <div class="col-md-9  col-md-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading"><h3 class="panel-title">添加主机组的配置</h3></div>
+            <div class="panel-body">
+                <!-- <form class="col-md-offset-1 form-inline" role="form"> -->
+                <form class="form-inline" method="post" enctype="multipart/form-data" role="form" id="hostform">
+                    {% csrf_token %}
+                    <label class="control-label">主机组:</label>
+                    <div class="form-group">
+                        <div class="">
+                            <select class="form-control" name='group'>
+                                <option value="chredis">reids服务</option>
+                                <option value="chdb">数据代理</option>
+                                <option value="chmap">联机服务</option>
+                                <option value="chelk">日志管理</option>
+                                <option value="chmq">流水服务</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="col-md-offset-1 control-label">主机IP:</label>
+                    <div class="form-group">
+                        <input class="form-control" type="text" placeholder="127.0.0.1" name="addip">
+                    </div>
+
+                    <button type="button" class="col-md-offset-3 btn btn-primary " id="hostbutton">添加</button>
+                </form>
+
+            </div>
+
+            <div class=" alert alert-danger alert-dismissible" id="message_wg" role="alert" hidden="hidden">
+                {#                        <div class=" alert alert-danger alert-dismissible" id="message_wg" role="alert" >#}
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <p id="message_p">
+                <p>
+            </div>
+        </div>
+
+
+
+    {#<p>请输入两个数字</p>#}
+    {#<form action="/add/" method="get">#}
+    {#    a: <input type="text" id="a" name="a"> <br>#}
+    {#    b: <input type="text" id="b" name="b"> <br>#}
+    {#    <p>result: <span id='result'></span></p>#}
+    {#    <button type="button" id='sum'>提交</button>#}
+    {#</form>#}
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">选择执行任务的主机</h3>
+            </div>
+            <div class="panel-body">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li><a href="?gg=chredis"><span class="">reids服务</span></a></li>
+                    <li><a href="?gg=chdb"><span >数据代理</span></a></li>
+                    <li><a href="?gg=chmap"><span>联机服务</span></a></li>
+                    <li><a href="?gg=chelk"><span>ELK服务</span></a></li>
+                    <li><a href="?gg=chmq"><span >流水服务</span></a></li>
+                </ul>
+                <form class="form-horizontal form-border" method="post" name="dm_form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- List group -->
+                    <div>
+                        <ul class="list-group">
+                            {% for host_add_list in host_add_lists.object_list %}
+{#                            {% for host in hosts %}#}
+                                <li class="list-group-item"><input type="checkbox" name="hostaddip" value="{{ host_add_list.addip }}">&nbsp;
+                                    &nbsp;&nbsp;<a href="">{{ host_add_list.addip }}</a></li>
+{#                            {% endfor %}#}
+                            {% endfor %}
+                        </ul>
+                        <div class="form-group">
+                            <div class="col-sm-offset-7 col-md-6">
+{#                                <button type="submit" class="col-md-offset-8 btn btn-primary " name="submit1"#}
+{#                                        id="select_host">#}
+                                  <button type="submit" class="col-md-offset-8 btn btn-primary " name="submit1"
+                                        id="select_host">
+                                    提交
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                        <nav>
+                            <ul class="pagination pagination-sm">
+                                {% if host_add_lists.has_previous %}
+                                <li>
+                                    <a href="?{{ host_add_lists.previous_page_number.querystring }}" aria-label="Previous">
+                                        <span aria-hidden="true">上一页</span>
+                                    </a>
+
+                                </li>
+                                {% endif %}
+                                {% for page in host_add_lists.pages %}
+                                    {% if page %}
+                                        {% ifequal page host_add_lists.number %}
+                                        <li><a class="current page" style="color: tan">{{ page }}</a></li>
+                                        {% else %}
+                                        <li><a href="?{{ page.querystring }}" class="page">{{ page }}</a></li>
+                                        {% endifequal %}
+                                    {% else %}
+                                    ...
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if host_add_lists.has_next %}
+                                <li>
+                                    <a href="?{{ host_add_lists.next_page_number.querystring }}" class="next">
+                                        下一页
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                </form>
+
+
+                <div class=" alert alert-danger alert-dismissible" id="message_dg" role="alert" hidden="hidden">
+                    {#                        <div class=" alert alert-danger alert-dismissible" id="message_wg" role="alert" >#}
+                    <button type="button" class="close" data-dismiss="alert"><span
+                            aria-hidden="true">&times;</span><span
+                            class="sr-only">Close</span></button>
+                    <p id="message_d">
+                    <p>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="panel panel-primary ">
+            <div class="panel-heading">
+                <h3 class="panel-title">删除主机</h3>
+            </div>
+            <div class="panel-body">
+               <div class="col-md-12">
+                   <table class="table table-bordered table-hover">
+                        <thead>
+                            <ul class="nav nav-tabs" role="dd_tablist">
+                                <li class="col-md-9 text-center text-success"><strong>主机IP</strong></li>
+                                <li class="col-md-3 text-center text-success"><strong>操作</strong></li>
+                            </ul>
+                        </thead>
+                        <tbody>
+                            {% for delete_ip in host_ip %}
+{#                        {% for all_host_ip in all_host_ips.object_list %}#}
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="col-md-9 text-center">
+                                    <a>{{ delete_ip.selectip }}</a>
+                                </li>
+                                <li class="col-md-3 text-center ">
+                                    <a style="color: red" href="?sid={{delete_ip.id}}">删除</a>
+                                </li>
+                            </ul>
+{#                        {% endfor %}#}
+                            {% endfor %}
+                        </tbody>
+
+                   </table>
+
+
+               </div>
+            </div>
+        </div>
+{#            <div class="panel-footer">#}
+{#                <nav>#}
+{#                    <ul class="pagination pagination-sm">#}
+{#                        {% if all_host_ips.has_previous %}#}
+{#                        <li>#}
+{#                            <a href="?{{ all_host_ips.previous_page_number.querystring }}" aria-label="Previous">#}
+{#                                <span aria-hidden="true">上一页</span>#}
+{#                            </a>#}
+{##}
+{#                        </li>#}
+{#                        {% endif %}#}
+{#                        {% for delete_page in all_host_ips.pages %}#}
+{#                            {% if delete_page %}#}
+{#                                {% ifequal delete_page all_host_ips.number %}#}
+{#                                <li><a class="current page" style="color: tan">{{ delete_page }}</a></li>#}
+{#                                {% else %}#}
+{#                                <li><a href="?{{ delete_page.querystring }}" class="page">{{ delete_page }}</a></li>#}
+{#                                {% endifequal %}#}
+{#                            {% else %}#}
+{#                            ...#}
+{#                            {% endif %}#}
+{#                        {% endfor %}#}
+{##}
+{#                        {% if all_host_ips.has_next %}#}
+{#                        <li>#}
+{#                            <a href="?{{ all_host_ips.next_page_number.querystring }}" class="next">#}
+{#                                下一页#}
+{#                            </a>#}
+{#                        </li>#}
+{#                        {% endif %}#}
+{#                    </ul>#}
+{#                </nav>#}
+{#            </div>#}
+{#        </div>#}
+
+    </div>
+</div>
+{% endblock %}
+{% block my_script %}
+<script>
+
+        $("#hostbutton").click(function(){
+          console.log("xxxxxxxxxxxxxxxxxxx");
+            $.ajax({
+                //cache: false,
+                type: "POST",
+                url:"{% url 'Addip' %}",
+                data:$("#hostform").serialize(),
+                dataType:"json",
+                cache:false,
+                async: false,
+                success: function(data) {
+                  console.log(data)
+                  console.log(data.msg,data.recode)
+                    if(data.recode == 'success'){
+                        $("#message_wg").hide();
+                        $("#hostform")[0].reset();
+                        alert("数据添加成功")
+                    }else if(data.recode == 'fail'){
+                        $("#message_p").html(data.msg)
+                        $("#message_wg").show();
+                    }
+                },
+                error:function(data){
+                  console.log(data)
+
+                }
+            });
+        });
+
+{#        $("#select_host").click(function(){#}
+{#          console.log("xxxxxxxxxxxxxxxxxxx");#}
+{#          var hostaddip = $("input[name='hostaddip']:checked").serialize();#}
+
+{#          var hostaddip ="";#}
+{#            $("input[name='hostaddip']:checked").each(function () {#}
+{#                hostaddip=hostaddip==""?$(this).val():hostaddip+","+$(this).val();#}
+{#                //hostaddip+=$(this).val()+",";#}
+{#            });#}
+           {% comment %}for(var i= 0;i<temp.length;i++){
+               hostaddip=hostaddip=="undefined"?temp[i].value+",":hostaddip+temp[i].value;
+           }{% endcomment %}
+
+{#          console.log(hostaddip);#}
+{#            $.ajax({#}
+{#                //cache: false,#}
+{#                type: "POST",#}
+{#                url:"{% url 'dbm:select_ip' %}",#}
+{#                data: hostaddip,#}
+{#                dataType:"json",#}
+{#                cache:false,#}
+{#                async: false,#}
+{#                success: function(data) {#}
+{#                  console.log(data.msg,data.status)#}
+{#                    if(data.ret == 'success'){#}
+{#                        //$("#dm_form")[0].reset();#}
+{#                        for (i = 0; i < document.forms[1].length; i++) {#}
+{##}
+{#                            if (document.forms[1].elements[i].type != "checkbox") continue;#}
+{##}
+{#                            document.forms[1].elements[i].checked = false;#}
+{##}
+{#                        }#}
+{##}
+{#                        alert("选择主机完成，如果继续添加，请再次选择")#}
+{#                        window.location.reload();//刷新当前页面.#}
+{#                    }else if(data.ret == 'fail'){#}
+{#                         for (i = 0; i < document.forms[1].length; i++) {#}
+{##}
+{#                            if (document.forms[1].elements[i].type != "checkbox") continue;#}
+{##}
+{#                            document.forms[1].elements[i].checked = false;#}
+{##}
+{#                        }#}
+{#                        alert(data.msg)#}
+{#                    }#}
+{#                },#}
+{#                error:function(data){#}
+{#                  console.log(data)#}
+{##}
+{#                }#}
+{#            });#}
+{#        });#}
+
+
+</script>
+
+
+{% endblock %}

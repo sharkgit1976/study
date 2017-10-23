@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>新晨运维作业平台</title>
+    <meta name="keywords" content="新晨运维作业平台">
+    <meta name="description" content="新晨运维作业平台">
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/login.css" rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="/static/js/html5shiv.min.js"></script>
+      <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="loginBg">
+    <div class="container">
+      <form class="form-login" id="form-login" action="" method="post">
+        <div class="header">
+          <h1 class="title">-- 简单 . 高效 . 自动化 --</h1>
+          <div class="subtitle">《新晨运维作业平台》</div>
+          <div class="wrap">
+            <input type="text" class="form-control" name="username" placeholder="请填写用户名" autofocus>
+            <input type="password" class="form-control" name="password" placeholder="请填写密码">
+            <button class="btn btn-primary btn-block" type="submit"> 登录</button>
+          </div>
+        </div>
+          {% csrf_token %}
+          {% if errors %}
+              <div class="wrap">
+                <button class="btn btn-danger btn-block" type="submit"> {{ errors }}</button>
+              </div>
+          {% endif %}
+      </form>
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+  <!--  <script src="/static/js/jquery.validate.js"></script> -->
+   <script src="/static/js/custom.js"></script> 
+  </body>
+</html>
