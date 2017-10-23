@@ -128,7 +128,13 @@ class ChMap(View):
                                            start_host=start_host,
                                            end_host=end_host)
                 chmap_result_str = chmap_obj.action_func()
+<<<<<<< HEAD
 
+=======
+                logger.info(chmap_result_str)
+                res_obj.status = True
+                res_obj.data = chmap_result_str
+>>>>>>> bac
                 endtime = datetime.datetime.now()
                 logger.info((endtime - starttime).seconds)
 

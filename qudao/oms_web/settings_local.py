@@ -35,6 +35,7 @@ USER_PERMISSION = ['admin']
 COMMAND_PERMISSION = ['reboot', 'rm', 'init', 'shutdown']
 
 
+<<<<<<< HEAD
 #升级脚本目录和文件
 VERSION_script_dir = '/app/ansible/install/'
 #柜员管理服务
@@ -59,10 +60,45 @@ VERSINO_CHAGENT_SOURCE = '/app/ansible/release/chagent'
 VERSINO_teller_CHDB_SOURCE = '/app/ansible/release/teller_chdb'
 VERSINO_trunk_CHDB_SOURCE = '/app/ansible/release/trunk_chdb'
 VERSINO_CHCOM_SOURCE = '/app/ansible/release/chcom'
+=======
+# 升级内容记录文件
+
+#升级脚本目录和文件
+VERSION_SCRIPT_DIR = '/app/ansible/install/'
+#柜员管理服务
+VERSION_TELLER_CHDB_SCRIPT = 'teller_chdb/chdb.py'
+CHDB_HOST = [27,28]
+#联机
+VERSION_CHMAP_SCRIPT = 'chmap/chmap.py'
+CHMAP_HOST = [22,23]
+#数据代理
+VERSION_CHAGENT_SCRIPT = 'chagent/chagent.py'
+CHAGENT_HOST = [24]
+#数据处理（尾箱）
+VERSION_TRUK_CHDB_SCRIPT = 'trunk_chdb/trunk_chdb.py'
+PGADMIN_HOST = [25,26]
+#通讯代理
+VERSION_CHCOM_SCRIPT = 'chcom/chcom.py'
+CHCOM_HOST = [32]
+
+#版本升级资源目录
+VERSION_CHMAP_SOURCE = '/app/ansible/release/chmap'
+VERSION_CHAGENT_SOURCE = '/app/ansible/release/chagent'
+VERSION_TELLER_CHDB_SOURCE = '/app/ansible/release/teller_chdb'
+VERSION_TRUNK_CHDB_SOURCE = '/app/ansible/release/trunk_chdb'
+VERSION_CHCOM_SOURCE = '/app/ansible/release/chcom'
+>>>>>>> bac
 #版本升级打包内容
 #VERSION_PACKAGES_DES = '/app/ansible/install/version_des.txt'
 VERSION_CHMAP_TXT = '/app/ansible/install/chmap/chmap_package.txt'
 VERSION_CHAGENT_TXT = '/app/ansible/install/chagent/chagent_package.txt'
+<<<<<<< HEAD
 VERSION_trunk_CHDB_TXT = '/app/ansible/install/trunk_chdb/chdb_package.txt'
 VERSION_CHCOM_TXT = '/app/ansible/install/chcom/chcom_package.txt'
 VERSION_teller_CHDB_TXT = '/app/ansible/install/teller_chdb/chdb_package.txt'
+=======
+VERSION_TRUNK_CHDB_TXT = '/app/ansible/install/trunk_chdb/chdb_package.txt'
+VERSION_CHCOM_TXT = '/app/ansible/install/chcom/chcom_package.txt'
+VERSION_TELLER_CHDB_TXT = '/app/ansible/install/teller_chdb/chdb_package.txt'
+
+>>>>>>> bac

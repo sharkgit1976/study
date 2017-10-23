@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 yan add a line to bac_new.txt
+=======
+Problem one has been repaired
+>>>>>>> bac
 shark branch

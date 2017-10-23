@@ -12,16 +12,23 @@
   </component>
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$" />
+<<<<<<< HEAD
     <orderEntry type="inheritedJdk" />
+=======
+    <orderEntry type="jdk" jdkName="Remote Python 2.7.8 (sftp://ansible@172.16.153.129:22/home/ansible/Envs/qudao3/bin/python)" jdkType="Python SDK" />
+>>>>>>> bac
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
+<<<<<<< HEAD
     <option name="TEMPLATE_FOLDERS">
       <list>
         <option value="$MODULE_DIR$/templates" />
       </list>
     </option>
+=======
+>>>>>>> bac
   </component>
   <component name="TestRunnerService">
     <option name="PROJECT_TEST_RUNNER" value="Unittests" />
