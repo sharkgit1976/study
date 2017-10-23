@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block title %}日终任务管理{% endblock %}
+{% block link_js %}
+    <style type="text/css">
+        *{
+            font-family: 微软雅黑;
+        }
+    </style>
+
+{% endblock %}
+{% block right %}
+    <div class="king-layout6-content">
+        <div class="col-md-10 col-md-offset-1">
+
+            <h3 class="page-header text-center text-info">应用部署</h3>
+
+            <div class=" alert alert-danger alert-dismissible" id="message_dg" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span
+                        aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <p id="message_d">请先修改部署主机的配置文件文件（/home/ansible/app.conf）
+                <p>
+            </div>
+            <div class="panel panel-success ">
+                <div class="panel-body">
+                    <a class="btn btn-info" href="?yybs=ljbs" role="button">联机部署</a>
+                    <a class="btn btn-info" href="?yybs=sjdl" role="button">数据代理</a>
+                    <a class="btn btn-info" href="?yybs=lsbs" role="button">流水部署</a>
+                </div>
+            </div>
+            <div>
+                <label class="col-md-3 control-label"><h4 class="text-info"><span>部署过程 :</span></h4></label>
+                <div class="stype=overflow:scroll">
+                    <textarea class="form-control" rows="10">{{ autodeploy_yybs }}</textarea>
+                </div>
+            </div>
+
+
+            <h3 class="page-header text-center text-success">系统部署</h3>
+
+            <div class=" alert alert-danger alert-dismissible"  role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span
+                        aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <p >请先修改部署主机的配置文件文件（/home/ansible/system.conf）
+                <p>
+            </div>
+            <div class="panel panel-success ">
+                <div class="panel-body">
+                    <a class="btn btn-success" href="?xtbs=ps" role="button">部署Postgres</a>
+                    <a class="btn btn-success" href="?xtbs=rs" role="button">部署Redis</a>
+                    <a class="btn btn-success" href="?xtbs=ml" role="button">部署Mysql</a>
+                </div>
+            </div>
+            <div>
+                <label class="col-md-3 control-label"><h4 class="text-success"><span>部署过程 :</span></h4></label>
+                <div class="stype=overflow:scroll">
+                    <textarea class="form-control" rows="10">{{ autodeploy_xtbs }}</textarea>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+{% endblock %}
