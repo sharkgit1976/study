@@ -1,214 +1,259 @@
 {% extends 'base.html' %}
 {% block my_css %}
     .add-pub-btn {
-        width: 90px;
-        height: 32px;
-        display: inline-block;
-        text-align: center;
-        color: #fff;
-        padding-right: 20px;
-        position: relative;
+    width: 90px;
+    height: 32px;
+    display: inline-block;
+    text-align: center;
+    color: #fff;
+    padding-right: 20px;
+    position: relative;
 
     }
     .my-inp-btn {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        top: 0px;
-        right: 0px;
-        left: 0px;
-        bottom: 0px;
-        opacity: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    bottom: 0px;
+    opacity: 0;
 
     }
 {% endblock %}
 {% block title %}{% endblock %}
 {% block right %}
 
-<div class="king-layout6-content">
-    <div class="col-md-10 col-md-offset-1">
-        <h3 class="page-header text-center text-info">{% block title_rollback %}{% endblock %}</h3>
-        <div class="form-group has-success">
-        <form class="form-inline" role="form" id="rollback_form">
-            {% csrf_token %}
-            <label  class="control-label" >版本号：</label >
-            <div class="form-group">
-                <select class="form-control" name='roll_choice_vers'>
-                    {% for version_num in version_list %}
-                        <option value="{{ version_num }}">{{version_num}}</option>
-                    {% endfor %}
-                </select>
-            </div>
+    <div class="king-layout6-content">
+        <div class="col-md-10 col-md-offset-1">
+            <h3 class="page-header text-center text-info">{% block title_rollback %}{% endblock %}</h3>
+            <div class="form-group has-success">
+                <form class="form-inline" role="form" id="rollback_form">
+                    {% csrf_token %}
+                    <label class="control-label">版本号：</label>
+                    <div class="form-group">
+                        <select class="form-control" name='roll_choice_vers'>
+                            {% for version_num in version_list %}
+                                <option value="{{ version_num }}">{{ version_num }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-            <label  class="col-md-offset-1 control-label" >主机范围：</label >
-            <div class="form-group">
-                <div class="col-md-6 input-group">
-                  <input class="col-md-2 form-control error_input" type="text" name="start_host" placeholder="0-10">
-                  <div class="input-group-addon">——</div>
-                  <input class="col-md-1 form-control error_input" type="text" name="end_host" placeholder="0-10">
+                    <label class="col-md-offset-1 control-label">主机范围：</label>
+                    <div class="form-group">
+                        <div class="col-md-6 input-group">
+                            <input class="col-md-2 form-control error_input" type="text" name="start_host"
+                                   placeholder="0-10">
+                            <div class="input-group-addon">——</div>
+                            <input class="col-md-1 form-control error_input" type="text" name="end_host"
+                                   placeholder="0-10">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary " id="rollback_btn">回滚</button>
+                    </div>
+
+                </form>
+
+                <blockquote></blockquote>
+                {#            <input class="form-control" type="text" placeholder="Readonly input here…" readonly>#}
+                <div class=" alert alert-info" id="message_dg" role="alert">
+                    <p id="message_d">主机范围：{{ host_range }}</p>
                 </div>
-            </div>
 
-            <div class="form-group">
-               <button type="button" class="btn btn-primary " id="rollback_btn">回滚</button>
-            </div>
-
-        </form>
-
-         <blockquote></blockquote>
-{#            <input class="form-control" type="text" placeholder="Readonly input here…" readonly>#}
-         <div class=" alert alert-info" id="message_dg" role="alert">
-            <p id="message_d">主机范围：</p>
-        </div>
-
-         <div>
-            <div>
-                <label class="col-md-3 control-label"><h4 class="text-info"><span>回滚过程 :</span></h4></label>
-            </div>
-            <div class="stype=overflow:scroll">
-                <textarea class="form-control" rows="8" id="rollback_text">{{ autodeploy_yybs }}</textarea>
-            </div>
-        </div>
-
-        <div><h3 class="page-header text-center text-info">{% block title_upgrade %}{% endblock %}</h3></div>
-        <form class="form-inline" role="form"
-              id="ifram_update_form"
-{#              action="{% url 'version:group_obj' 'chmap' %}"#}
-              action="{{ request.path }}"
-              method="POST"
-              enctype="multipart/form-data"
-              target="ifr">
-            {% csrf_token %}
-
-            <blockquote></blockquote>
-
-                   <div class="form-group">
-                    <button class="btn btn-primary add-pub-btn">上传升级包
-                        <input class="my-inp-btn" type="file" name="v_file_obj" id="inputfile">
-                    </button>
-                       <span id="chioce_file_name">未选择任何文件</span>
+                <div>
+                    <div>
+                        <label class="col-md-3 control-label"><h4 class="text-info"><span>回滚过程 :</span></h4></label>
+                    </div>
+                    <div class="stype=overflow:scroll">
+                        <textarea class="form-control" rows="8" id="rollback_text">{{ autodeploy_yybs }}</textarea>
+                    </div>
                 </div>
-            <div class="col-md-offset-1 form-group">
-                <label  class="control-label" >主机范围：</label >
-                <div class="col-md-6 input-group">
-                  <input class="form-control error_input" type="text" name="start_host" placeholder="0-10">
-                  <div class="input-group-addon">——</div>
-                  <input class="form-control error_input" type="text" name="end_host" placeholder="0-10">
+
+                <div><h3 class="page-header text-center text-info">{% block title_upgrade %}{% endblock %}</h3></div>
+                <form class="form-horizontal" role="form"
+                      id="ifram_update_form"
+                        {#              action="{% url 'version:group_obj' 'chmap' %}"#}
+                      action="{{ request.path }}"
+                      method="POST"
+                      enctype="multipart/form-data"
+                      target="ifr">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <button class="btn btn-primary add-pub-btn">上传升级包
+                            <input class="my-inp-btn" type="file" name="v_file_obj" id="inputfile">
+                        </button>
+                        <span id="chioce_file_name">未选择任何文件</span>
+                    </div>
+                    <div class="col-md-offset-1 form-group">
+                        <label class="control-label">主机范围：</label>
+                        <div class="col-md-6 input-group">
+                            <input class="form-control error_input" type="text" name="start_host" placeholder="0-10">
+                            <div class="input-group-addon">——</div>
+                            <input class="form-control error_input" type="text" name="end_host" placeholder="0-10">
+                        </div>
+                    </div>
+
+             <div class="col-md-6 form-group">
+                 <label class="col-md-4 control-label">打包内容</label>
+             </div>
+                    <div>
+               <div style="margin-top: 15px;">
+                    <div class="col-md-12 form-group">
+                        <div>
+                            <textarea class="col-md-12 form-control stype=overflow:scroll" rows="4" name="packge_content" id="file_text">
+                            </textarea>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-offset-1 form-group">
-                   <button type="button" class="btn btn-primary " id="update_btn">升级</button>
-            </div>
-        </form>
+</div>
+                    <div class="col-md-offset-1 form-group">
+                        <button type="button" class="btn btn-primary " id="update_btn">升级</button>
+                    </div>
+                </form>
 
-        <!--ifram tag-->
-        <iframe id="ifr-load" name="ifr" style="display: none"></iframe>
-
-        <div>
-            <div>
-                <label class="col-md-3 control-label">
-                    <h4 class="text-info"><span>升级过程 :</span></h4>
-                </label>
-            </div>
-            <div class="stype=overflow:scroll">
-                <textarea class="form-control" rows="8" id="update_text">{{ autodeploy_yybs }}</textarea>
+                <!--ifram tag-->
+                <iframe id="ifr-load" name="ifr" style="display: none"></iframe>
+                <div>
+                    <div>
+                        <label class="col-md-3 control-label">
+                            <h4 class="text-info"><span>升级过程 :</span></h4>
+                        </label>
+                    </div>
+                    <div class="stype=overflow:scroll">
+                        <textarea class="form-control" rows="8"
+                                  id="update_text">{{ autodeploy_yybs }}</textarea>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-</div>
 
 {% endblock %}
 {% block my_script %}
     <script>
-        $(".error_input").on('foupdate_textcus',function () {
-            $(this).css('border-color','');
+        $(".error_input").on('foupdate_textcus', function () {
+            $(this).css('border-color', '');
 
         });
-        $("button#rollback_btn").on('click',function () {
+        $("button#rollback_btn").on('click', function () {
             //<input class="col-md-1 form-control" name="method" type="text" value="version_rollback"/>
-{#            var group_name = '{{ group_name }}'#}
+            {#            var group_name = '{{ group_name }}'#}
             $.post(
                 "{{ request.path }}",
+
+                //获取到 form 表单的所有数据，并进行序列化
                 $("form#rollback_form").serialize(),
+
+                // 回调函数
                 function (callback) {
+
+                    // 从后台返回的数据进行序列化，得到 jQuiery 对象
                     var data = JSON.parse(callback);
-                    if (data.status){
+                    if (data.status) {
                         $("textarea#rollback_text").text(data.data);
-                    }else{
-                        $("#rollback_form input[type='text']").css('border-color','rgb(222,97,94)');
+                    } else {
+                        $("#rollback_form input[type='text']").css('border-color', 'rgb(222,97,94)');
                         $("textarea#rollback_text").text(data.error);
-                    };
+                    }
+                    ;
                 }); // end ajax
         }); // end click
 
+
+        //  版本升级
         // ifram + form "伪" Ajax 提交表单和文件
         // 1. 先检查上传文件
 
-        $("input#inputfile").on('change',function () {
+        $("input#inputfile").on('change', function () {
             var inp_file = $("input#inputfile").val();
-            if (inp_file){
+            if (inp_file) {
                 var flag = true;
-                var pos=inp_file.lastIndexOf("\\");
-                var jquery_fine_name = inp_file.substring(pos + 1);
-                $("span#chioce_file_name").text(" 上传的文件：" + jquery_fine_name);
+                var pos = inp_file.lastIndexOf("\\");
+                var jquery_file_name = inp_file.substring(pos + 1);
+                $("span#chioce_file_name").text(" 上传的文件：" + jquery_file_name);
                 if (!inp_file.match(/.tar.gz/i)) {
                     $("input#inputfile").val("");
                     alert("文件格式错误,仅支持 .tar.gz 格式");
                     flag = false;
                     return flag;
-                };
+                }
+                ;
                 return flag
-            };
+            }
+            ;
         });
 
+
         // 2. 检查完毕开始提交表单数据和文件
-        $("#update_btn").on('click',function () {
-          var inp_file = $("input#inputfile").val();
-          if(!inp_file){
+        $("#update_btn").on('click', function () {
+            var inp_file = $("input#inputfile").val();
+
+            var update_items     = $("textarea#file_text").val();
+
+            //用于把变量的值为：null、空字符串和任意数量的空格都替换为空字符串，之后判断其长度
+            //这样就可以判断变量的值是否有输入。
+            var update_items_num = update_items.replace(/(^\s*)|(\s*$)/g, "").length
+
+            if (!inp_file) {
                 alert("请选择上传的升级包");  // 预防不传升级包直接点提交
                 return false;
-            };
+            }
+            ;
+
+            // 检查是否填写了需要升级的目录名或文件名的相对路径
+            if (update_items_num == 0) {
+                alert("请输入打包后需要升级的内容(目录文件的相对路径)");
+                $("textarea#file_text").css('border-color', 'rgb(222,97,94)');
+                return false;
+            }
+            ;
             var s_host_value = $("#ifram_update_form input[name='start_host']").val();
             var e_host_value = $("#ifram_update_form input[name='end_host']").val();
 
-            if (!s_host_value){
-                 alert("请输入起始主机范围");
-                 $("#ifram_update_form input[type='text']").css('border-color','rgb(222,97,94)');
-                 return false;
-            };
-            if (!e_host_value){
-                alert("请输入结束主机范围");
-                $("#ifram_update_form input[type='text']").css('border-color','rgb(222,97,94)');
+            if (!s_host_value) {
+                alert("请输入起始主机范围");
+                $("#ifram_update_form input[type='text']").css('border-color', 'rgb(222,97,94)');
                 return false;
-            };
+            }
+            ;
+            if (!e_host_value) {
+                alert("请输入结束主机范围");
+                $("#ifram_update_form input[type='text']").css('border-color', 'rgb(222,97,94)');
+                return false;
+            }
+            ;
+
             $("#ifram_update_form").submit(); // 提交
         });
 
         // 3. 接收后台反回的数据
-        $("iframe#ifr-load").on('load',function () {
+        $("iframe#ifr-load").on('load', function () {
             // 返回的数据会在 ifram 中，从ifram中取数据
             var result_data = $('iframe#ifr-load').contents().find('body').html();
             var result_obj = JSON.parse(result_data);
             $("textarea#update_text").val("返回状态：" + result_obj.status + '\n' +
-                                          "返回数据内容：" + result_obj.data + '\n' +
-                                          "返回的错误信息：" + result_obj.error);
+                "返回数据内容：" + result_obj.data + '\n' +
+                "返回的错误信息：" + result_obj.error);
         });
 
         // Ajax 提交表单
-{#        $("button#update_btn").on('click',function () {#}
-{#            $.post(#}
-{#                    "{% url 'version:group_obj' %}",#}
-{#                    $("form#update_form").serialize(),#}
-{#                    function (callback) {#}
-{#                        var data = JSON.parse(callback);#}
-{#                        if (data.status) {#}
-{#                            $("textarea#update_text").text(data.data);#}
-{#                        } else {#}
-{#                            $("#update_form input[type='text']").css('border-color', 'rgb(222,97,94)');#}
-{#                            $("textarea#update_text").text(data.error);#}
-{#                        }#}
-{#                    });#}
-{#        })#}
+        {#        $("button#update_btn").on('click',function () {#}
+        {#            $.post(#}
+        {#                    "{% url 'version:group_obj' %}",#}
+        {#                    $("form#update_form").serialize(),#}
+        {#                    function (callback) {#}
+        {#                        var data = JSON.parse(callback);#}
+        {#                        if (data.status) {#}
+        {#                            $("textarea#update_text").text(data.data);#}
+        {#                        } else {#}
+        {#                            $("#update_form input[type='text']").css('border-color', 'rgb(222,97,94)');#}
+        {#                            $("textarea#update_text").text(data.error);#}
+        {#                        }#}
+        {#                    });#}
+        {#        })#}
     </script>
 {% endblock %}
