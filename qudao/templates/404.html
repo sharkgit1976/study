@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>404</title>
+
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link href="/static/css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/static/css/custom.css" rel="stylesheet">
+    <link href="/static/css/" rel="stylesheet">
+
+</head>
+
+<body class="gray-bg">
+
+
+    <div class="middle-box text-center animated fadeInDown">
+        <h1>{{ response.status_code }}</h1>
+        <h3 class="font-bold">找不到网页>>{{ poll }}</h3>
+
+        <div class="error-desc">
+            对不起，网页地址未找到。请核实您的URL地址，或者点击按钮回到首页
+            <form class="form-inline m-t" role="form">
+                <a type="button" href="/" class="btn btn-primary">返回首页</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mainly scripts -->
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+
+</body>
+</html>

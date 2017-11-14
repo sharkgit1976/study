@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.views.generic.base import  View
+from django.views.generic.base import View
 import logging
 import os
 <<<<<<< HEAD
@@ -21,6 +21,28 @@ import json
 
 logger = logging.getLogger('django')
 logger.info('ytest')
+
+
+from django.http import HttpResponse, HttpResponseNotFound
+
+from django.http import Http404
+from django.shortcuts import render_to_response
+
+def detail(requests):
+    p = '233'
+    try:
+        obj = getattr(settings, 'ddd')
+    except Exception:
+        raise Http404("Poll does not exist")
+    return render_to_response('404.html', {'poll': p})
+
+def my_view(request):
+    # ...
+    foo = True
+    if foo:
+        return HttpResponseNotFound('<h1>Page not yan found</h1>')
+    else:
+        return HttpResponse('<h1>Page was found</h1>')
 
 class BaseResponse:
     '''
@@ -66,24 +88,26 @@ class VersionControl(object):
                  start_host='',
                  end_host='',
                  ):
-        self.action             = ' {}'.format(action)
+        self.action           = action
+        self.action_arg       = ' {}'.format(action_arg)
+        self.start_host       = ' {}'.format(start_host)
         self.script_file      = script_file
         self.script_dir       = scritpt_dir
-        self.action_arg           = ' {}'.format(action_arg)
-        self.start_host       = ' {}'.format(start_host)
         self.end_host         = end_host
         self.script_full_path = os.path.join(self.script_dir, self.script_file)
-
-        self.cmd     = 'python {}'.format(self.script_full_path)
-        self.cmd_run = self.cmd.format(self.action)
-
+        self.cmd_run_str      = 'python {} {}'.format(self.script_full_path, self.action)
+        logger.info(self.cmd_run_str)
     def get_version_list(self):
         '''
         获取版本列表
         :return: 包含历史版本号的列表
         '''
-        self.result_str   = os.popen(self.cmd_run).read()
+        logger.info('yan>>{}'.format(self.action))
+        logger.info('yan>>{}'.format(self.cmd_run_str))
+        self.result_str = os.popen(self.cmd_run_str).read()
+
         logger.info(self.result_str.split(':'))
+
         self.version_list = self.result_str.split(':')[1].strip().split('\n')
         # self.version_list = ['20170824', '20170825', '20170826']
 >>>>>>> bac
@@ -102,10 +126,16 @@ class VersionControl(object):
           测试是使用  host_range = 8-8
         :return:
         """
+<<<<<<< HEAD
         self.cmd_run = self.cmd_run +  self.action_arg + self.start_host + '-' + self.end_host
 >>>>>>> bac
         # self.result_str = os.popen(self.cmd_run).read()
         self.result_str = self.cmd_run
+=======
+        self.cmd_run_str = self.cmd_run_str +  self.action_arg + self.start_host + '-' + self.end_host
+        # self.result_str = os.popen(self.cmd_run_str).read()
+        self.result_str = self.cmd_run_str
+>>>>>>> shark
         return self.result_str
 
 <<<<<<< HEAD
@@ -144,7 +174,7 @@ def value_handler(request, arg):
     group_name = arg.upper()
     print('GET - group_name>>>:', group_name)
 
-    if group_name == 'TELLER_CHDB':
+    if group_name == 'TELLERCHDB':
         handler_script = settings.VERSION_TELLER_CHDB_SCRIPT
         src_dir        = settings.VERSION_TELLER_CHDB_SOURCE
         v_cont_txt     = settings.VERSION_TELLER_CHDB_TXT
@@ -160,7 +190,7 @@ def value_handler(request, arg):
         src_dir        = settings.VERSION_CHAGENT_SOURCE
         v_cont_txt     = settings.VERSION_CHAGENT_TXT
         host_range = settings.CHAGENT_HOST
-    elif group_name == 'TRUNK_CHDB':
+    elif group_name == 'TRUNKCHDB':
         handler_script = settings.VERSION_TRUK_CHDB_SCRIPT
         src_dir = settings.VERSION_TRUNK_CHDB_SOURCE
         v_cont_txt = settings.VERSION_TRUNK_CHDB_TXT
@@ -204,12 +234,18 @@ class ChDb(View):
         if handler_script:
             chdb_obj     = VersionControl('0', script_file=handler_script)
             version_list = chdb_obj.get_version_list()
+
             logger.info("------{}----------".format(group_name))
+<<<<<<< HEAD
             return render(request, '{}sversion.html'.format(group_name), locals())
 >>>>>>> bac
+=======
+            return render(request, '{}version.html'.format(group_name.lower()), locals())
+>>>>>>> shark
         else:
-            return HttpResponse("error code: 404,页面不存在")
-
+            # return HttpResponseNotFound('<h1>Page not yan found</h1>')
+            p = 'yan error'
+            return render_to_response('404.html', {'poll': p })
     def post(self, request, arg):
 <<<<<<< HEAD
         handler_script, group_name = script_handler(request, arg)
@@ -294,7 +330,7 @@ class ChDb(View):
 
         start_host_n, end_host_n = host_range_clean(start_host, end_host)
 
-        if start_host_n:
+        if (start_host_n in host_range)  and (end_host_n in host_range):
             if roll_choice_vers:
                 '''
                 版本回滚
@@ -324,7 +360,6 @@ class ChDb(View):
                 '''
                 file_obj = request.FILES.get('v_file_obj', '')
                 packge_content = request.POST.get("packge_content")
-                chmap_txt = settings.VERSION_CHMAP_TXT
 
                 logger.info(packge_content)
                 logger.info(file_obj)
@@ -339,14 +374,13 @@ class ChDb(View):
 
                     # 开始接收文件，并写入到服务器的指定目录下
                     # 组合文件的完整路径
-                    set_dir = getattr(settings, 'VERSINO_{}_SOURCE'.format(group_name))
                     # 第一个参数是路径，第二个参数是文件名
-                    file_path = os.path.join(set_dir, file_obj.name)
-
+                    file_full_path = os.path.join(src_dir, file_obj.name)
+                    logger.info('file_path>>{}'.format(file_full_path))
                     # 保存上传的文件
-                    with open(file_path, 'wb') as new_file_obj:
+                    with open(file_full_path, 'wb') as new_file_obj:
                         [new_file_obj.write(chunk) for chunk in file_obj.chunks()]
-                    if os.path.isfile(new_file_obj):
+                    if os.path.isfile(file_full_path):
                         logger.info('{}保存成功'.format(new_file_obj))
 
                     logger.info('\n打包开始时间：' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
@@ -359,11 +393,11 @@ class ChDb(View):
                                               )
 
                     # 写入需要打包升级的目录名或文件名
-                    logger.info("-------------开始写入打包内容-------------")
+                    logger.info("-------------开始写入打包的后需要升级内容-------------")
                     logger.info('\n升级包名：' + chdb_obj.action_arg)
                     logger.info('\n打包开始时间：{}'.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
-                    with open(chmap_txt, 'a+') as package_index:
+                    with open(v_cont_txt, 'a+') as package_index:
                         package_index.write('需要打包升级的目录名或文件名：{}\n'.format(packge_content))
 
                     logger.info('\n打包结束时间：{}'.format(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
@@ -389,4 +423,6 @@ class ChDb(View):
 >>>>>>> bac
         return HttpResponse(data)
 
+def page_not_found(request):
 
+    return render_to_response('404.html')

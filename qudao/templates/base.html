@@ -115,8 +115,11 @@
               <ul class="treeview-menu" style="background: #1C2026;">
                 <li><a href="{% url 'version:group_obj' 'ChMap'%}"><i class="fa"></i>联机代理升级</a></li>
                 <li><a href="{% url 'version:group_obj' 'ChAgent' %}"><i class="fa"></i>数据代理升级</a></li>
-                <li><a href="{% url 'version:group_obj' 'ChDb' %}"><i class="fa"></i>数据处理升级</a></li>
-                <li><a href="{% url 'version:group_obj' 'DayEnd' %}"><i class="fa"></i>日终服务升级</a></li>
+{#                <li><a href="{% url 'version:group_obj' 'ChDb' %}"><i class="fa"></i>数据处理升级</a></li>#}
+                <li><a href="{% url 'version:group_obj' 'TrunkChDb' %}"><i class="fa"></i>尾箱数据处理升级</a></li>
+                <li><a href="{% url 'version:group_obj' 'ChCom' %}"><i class="fa"></i>通讯代理升级</a></li>
+                <li><a href="{% url 'version:group_obj' 'TellerChDb' %}"><i class="fa"></i>柜员管理服务升级</a></li>
+
               </ul>
             </li>
             <li class="treeview">
